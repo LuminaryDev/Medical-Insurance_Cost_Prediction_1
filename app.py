@@ -5,9 +5,9 @@ import joblib
 
 # Ensure the model is available
 try:  
-    final_model = optimized_models["Optimized Random Forest"]  # Or replace with your optimized model
-except KeyError:  
-    print("❌ Optimized model not found. Verify the model name in `optimized_models`.")  
+    final_model = joblib.load("optimized_random_forest_model.pkl")
+except FileNotFoundError:  
+    print(" Optimized model not found. Verify the model name in `optimized_models`.")  
     exit()  
 
 # Predictions on the Test set  
