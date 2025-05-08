@@ -1,39 +1,39 @@
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score  
-import matplotlib.pyplot as plt  
-import seaborn as sns  
-import joblib  
+import streamlit as st
+import pandas as pd
+import joblib
 
-# Ensure the model is available
-try:  
+# Load the trained model
+try:
     final_model = joblib.load("optimized_random_forest_model.pkl")
-except FileNotFoundError:  
-    print(" Optimized model not found. Verify the model name in `optimized_models`.")  
-    exit()  
+except FileNotFoundError:
+    st.error("❌ Model file not found. Ensure 'optimized_random_forest_model.pkl' exists.")
+    st.stop()
 
-# Predictions on the Test set  
-y_pred_test = final_model.predict(X_test)  
+st.title("🏥 Medical Insurance Cost Prediction App")
 
-# Compute Evaluation Metrics  
-mse = mean_squared_error(y_test, y_pred_test)  
-rmse = mean_squared_error(y_test, y_pred_test, squared=False)  
-mae = mean_absolute_error(y_test, y_pred_test)  
-r2 = r2_score(y_test, y_pred_test)  
+st.write("Enter the following information to predict the insurance cost:")
 
-# Print results with a clean format  
-print("\n📊 Final Model Performance (Test Set):")  
-print(f"  - MSE: ${mse:,.2f}")  
-print(f"  - RMSE: ${rmse:,.2f}")  
-print(f"  - MAE: ${mae:,.2f}")  
-print(f"  - R²: {r2:.3f}")  
+# Collect user input
+age = st.number_input("Age", min_value=18, max_value=100, step=1)
+sex = st.selectbox("Sex", ["male", "female"])
+bmi = st.number_input("BMI", min_value=10.0, max_value=50.0)
+children = st.slider("Number of Children", 0, 5)
+smoker = st.selectbox("Smoker", ["yes", "no"])
+region = st.selectbox("Region", ["southeast", "southwest", "northeast", "northwest"])
 
-# Visualize Actual vs Predicted
-plt.figure(figsize=(8, 4))  
-sns.scatterplot(x=y_test, y=y_pred_test, alpha=0.6)  
-plt.plot([0, max(y_test)], [0, max(y_test)], 'r--', linewidth=1)  # Diagonal line for perfect prediction
-plt.title("Actual vs. Predicted Charges (Test Set)")  
-plt.xlabel("Actual Charges (USD)")  
-plt.ylabel("Predicted Charges (USD)")  
-plt.show()
+# Convert to DataFrame for prediction
+if st.button("Predict"):
+    input_data = pd.DataFrame([{
+        "age": age,
+        "sex": sex,
+        "bmi": bmi,
+        "children": children,
+        "smoker": smoker,
+        "region": region
+    }])
 
-# Save the final model for deployment
-joblib.dump(final_model, "optimized_random_forest_model.pkl")
+    # Preprocess categorical variables if necessary (depends on how you trained the model)
+    # If you used one-hot encoding or LabelEncoder during training, apply the same here.
+
+    prediction = final_model.predict(input_data)[0]
+    st.success(f"💰 Estimated Insurance Cost: ${prediction:,.2f}")
