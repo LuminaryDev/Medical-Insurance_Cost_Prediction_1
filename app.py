@@ -17,7 +17,7 @@ st.write("Enter the following information to predict the insurance cost:")
 age = st.number_input("Age", min_value=18, max_value=100, step=1)
 sex = st.selectbox("Sex", ["male", "female"])
 bmi = st.number_input("BMI", min_value=1.0, max_value=50.0)
-children = st.number_input("Number of Children", min_value=10.0, max_value=15.0)
+children = st.number_input("Number of Children", 0, 15
 smoker = st.selectbox("Smoker", ["yes", "no"])
 region = st.selectbox("Region", ["southeast", "southwest", "northeast", "northwest"])
 
