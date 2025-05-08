@@ -1,0 +1,16 @@
+import joblib
+from sklearn.preprocessing import OneHotEncoder
+import pandas as pd
+
+# Sample data (this should match your actual data's structure)
+data = {'region': ['southeast', 'southwest', 'northeast', 'northwest']}
+df = pd.DataFrame(data)
+
+# Initialize OneHotEncoder and fit on the 'region' column
+one_hot_encoder = OneHotEncoder(drop='first', sparse_output=False)
+region_encoded = one_hot_encoder.fit_transform(df[['region']])
+
+# Save the encoder
+joblib.dump(one_hot_encoder, 'region_encoder.pkl')
+
+print("Encoder saved as 'region_encoder.pkl'")
